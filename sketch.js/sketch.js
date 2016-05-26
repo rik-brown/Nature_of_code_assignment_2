@@ -22,7 +22,7 @@ var bounce = true; //to enable 'floorBounce()'
 
 
 function setup() {
-  createCanvas(800, 600);
+  createCanvas(windowWidth, windowHeight);
   background (bkgcol);
   noStroke();
   colorMode (HSB, 360, 100, 100);
@@ -35,13 +35,14 @@ function setup() {
 function draw() {
   trails();
   for (var i = 0; i < colony.length; i++) { // Iterate through the colony array, cell by cell
-    gravity = createVector (0, 0.1);
-    wind = createVector (random(0.05, 0.2), 0);
+    gravity = createVector (0, 0.2);
+    wind = createVector (random(0.05, 0.1), 0);
     randomForce = createVector (random(-0.1,0.1), random(-0.1,0.1));
     colony[i].applyForce(gravity);
     colony[i].applyForce(wind);
-    colony[i].applyForce(randomForce);
+    //colony[i].applyForce(randomForce);
     colony[i].update();
+    //colony[i].floorBounce();
     if (bounce) {colony[i].floorBounce();} else {colony[i].wraparound();}
     colony[i].display();
   }
