@@ -7,15 +7,16 @@ function Cell () {
   
   this.applyForce = function(force) {
     this.acceleration = createVector (0,0);
-    force.div(this.mass);
-    this.acceleration.add(force);
+    var f = force.copy();
+    f.div(this.mass);
+    this.acceleration.add(f);
     this.velocity.add(this.acceleration);
     this.mass = this.radius * 0.1;
   }
   
   this.update = function() {
     // Function where cell position and other things are updated
-    this.velocity.mult(0.99);
+    //this.velocity.mult(0.99);
     this.position.add(this.velocity);
   }
   
@@ -36,12 +37,10 @@ function Cell () {
     if (this.position.y < 0) {this.position.y = height;}
   }
   
-  this.floorBounce = function () { // Simple floor detection
-    if (this.position.x > width) {this.position.x = 0;} 
-    if (this.position.x < 0) {this.position.x = width;}
-    if (this.position.y > height) {
-      this.position.y = height;
-      this.velocity.y *= -1;
-    }
+  this.bounce = function () { // Simple wraparound detection
+    if (this.position.x > width) {this.position.x = width; this.velocity.x *= -1} 
+    if (this.position.x < 0) {this.position.x = 0; this.velocity.x *= -1}
+    if (this.position.y > height) {this.position.y = height; this.velocity.y *= -1}
+    if (this.position.y < 0) {this.position.y = 0; this.velocity.y *= -1}
   }
 }

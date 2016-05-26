@@ -18,7 +18,7 @@
 
 var colony = []; // array for all cells
 var bkgcol = 0; // background color
-var bounce = true; //to enable 'floorBounce()'
+var bounce = false; //to enable 'floorBounce()'
 
 
 function setup() {
@@ -36,14 +36,13 @@ function draw() {
   trails();
   for (var i = 0; i < colony.length; i++) { // Iterate through the colony array, cell by cell
     gravity = createVector (0, 0.2);
-    wind = createVector (random(0.05, 0.1), 0);
+    wind = createVector (random(0.01, 0.05), 0);
     randomForce = createVector (random(-0.1,0.1), random(-0.1,0.1));
     colony[i].applyForce(gravity);
     colony[i].applyForce(wind);
     //colony[i].applyForce(randomForce);
     colony[i].update();
-    //colony[i].floorBounce();
-    if (bounce) {colony[i].floorBounce();} else {colony[i].wraparound();}
+    if (bounce) {colony[i].bounce();} else {colony[i].wraparound();}
     colony[i].display();
   }
 }
