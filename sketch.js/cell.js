@@ -1,31 +1,44 @@
-function Cell () {
+function Cell (x, y) {
   // Constructor for cell object
-  this.position = createVector (random(width), random(height)); // Cell starts at random position
+  this.position = createVector (x, y); // Cell starts at random position
   this.velocity = createVector (0, 0); // Initial velocity is 0
-  this.radius = random(10,30);
+  this.radius = random(20,50);
+  this.mass = this.radius;
   this.color = color(random(360), random(50,100), random(50,100));
+  this.G = 1;
   
+  this.calculateForce = function(other) {
+    var force = p5.Vector.sub(other.position, this.position);
+    var distance = force.mag();
+    distance = constrain(distance, 5, 25);
+    force.normalize();
+    var strength = (this.G * this.mass * other.mass) / (distance * distance);
+    force.mult(strength);
+    return force;
+  }
+
   this.applyForce = function(force) {
     this.acceleration = createVector (0,0);
     var f = force.copy();
     f.div(this.mass);
     this.acceleration.add(f);
     this.velocity.add(this.acceleration);
-    this.mass = this.radius * 0.1;
-  }
-  
+  } 
+ 
   this.update = function() {
     // Function where cell position and other things are updated
-    //this.velocity.mult(0.99);
+    this.velocity.mult(0.95);
     this.position.add(this.velocity);
   }
   
-  this.display = function() {
+  this.display = function(i) {
     // Function where the cell is rendered to the canvas
     fill(this.color);
     push();
     translate(this.position.x, this.position.y); // translate to the location of the walker object
     rotate(this.velocity.heading()); // rotate to the heading of the velocity vector
+    textSize(this.radius*2);
+    //text(i,0,0)
     ellipse (0, 0, this.radius, this.radius);
     pop();
   }
