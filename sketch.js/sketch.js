@@ -18,11 +18,13 @@
 
 var colony = []; // array for all cells
 var bkgcol = 0; // background color
+var bounce = true; //to enable 'floorBounce()'
 
 
 function setup() {
   createCanvas(800, 600);
   background (bkgcol);
+  noStroke();
   colorMode (HSB, 360, 100, 100);
   var population = random(5,20); // number of cells in the colony
   for (var i = 0; i < population; i++) { // Fill the colony array with a population of Cell objects
@@ -31,38 +33,24 @@ function setup() {
 }
 
 function draw() {
+  trails();
   for (var i = 0; i < colony.length; i++) { // Iterate through the colony array, cell by cell
-  colony[i].update();
-  colony[i].checkCanvasLimits();
-  colony[i].display();
+    gravity = createVector (0, 0.1);
+    wind = createVector (random(0.05, 0.2), 0);
+    randomForce = createVector (random(-0.1,0.1), random(-0.1,0.1));
+    colony[i].applyForce(gravity);
+    colony[i].applyForce(wind);
+    colony[i].applyForce(randomForce);
+    colony[i].update();
+    if (bounce) {colony[i].floorBounce();} else {colony[i].wraparound();}
+    colony[i].display();
   }
 }
 
-function Cell () {
-  // Constructor for cell object
-  this.position = createVector (random(width), random(height)); // Cell starts at random position
-  this.velocity = createVector (0, 0); // Initial velocity is 0
-  this.radius = random(10,30);
-  this.color = color(random(360), random(50,100), random(50,100));
-  
-  this.update = function() {
-    // Function where cell position and other things are updated
-  }
-  
-  this.display = function() {
-    // Function where the cell is rendered to the canvas
-    fill(this.color);
-    push();
-    translate(this.position.x, this.position.y); // translate to the location of the walker object
-    rotate(this.velocity.heading()); // rotate to the heading of the velocity vector
-    ellipse (0, 0, this.radius, this.radius);
-    pop();
-  }
-  
-  this.checkCanvasLimits = function () { // Simple wraparound detection
-    if (this.position.x > width) {this.position.x = 0;} 
-    if (this.position.x < 0) {this.position.x = width;}
-    if (this.position.y > height) {this.position.y = 0;}
-    if (this.position.y < 0) {this.position.y = height;}
-  }
+function trails() {
+  blendMode(DIFFERENCE);
+  fill(1);
+  rect(0,0,width, height);
+  blendMode(BLEND);
+  fill(255);
 }
