@@ -2,9 +2,10 @@ function Cell (x, y) {
   // Constructor for cell object
   this.position = createVector (x, y); // Cell starts at random position
   this.velocity = createVector (0, 0); // Initial velocity is 0
-  this.radius = random(20,50);
-  this.mass = this.radius;
-  this.color = color(random(360), random(50,100), random(50,100));
+  this.radius = random(20,100); // maximum difference is 100-20 = 80
+  this.mass = this.radius/2;
+  //this.color = color(random(360), random(50,100), random(50,100));
+  this.color = color(random(360));
   this.G = 1;
   
   this.calculateForce = function(other) {
@@ -13,7 +14,13 @@ function Cell (x, y) {
     distance = constrain(distance, 5, 25);
     force.normalize();
     var strength = (this.G * this.mass * other.mass) / (distance * distance);
-    force.mult(strength);
+    force.mult(strength); // force is now equal to 'normal gravitational attraction'
+    var sizeDiff = abs(other.radius - this.radius);
+    // Similar size attracts, different size repels
+    // as sizeDiff approaches zero, strength should be mult.(1)
+    // as sizeDiff increases, strength should be mult.(-1)
+    var sizeFactor = map(sizeDiff, 0, 80, -1, 1);
+    force.mult(sizeFactor);
     return force;
   }
 
@@ -27,7 +34,7 @@ function Cell (x, y) {
  
   this.update = function() {
     // Function where cell position and other things are updated
-    this.velocity.mult(0.95);
+    this.velocity.mult(0.8);
     this.position.add(this.velocity);
   }
   

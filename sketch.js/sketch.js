@@ -16,34 +16,40 @@
 *
 */
 
-var colony = []; // array for all cells
+var cells = []; // array for all cells
 var bkgcol = 0; // background color
-var bounce = false; //to enable 'floorBounce()'
+var bounce = true; //to enable 'floorBounce()'
+var maxRadius = 50;
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  //frameRate(1);
   background (bkgcol);
-  noStroke();
+  //noStroke();
+  stroke(0);
   colorMode (HSB, 360, 100, 100);
-  var population = random(5,20); // number of cells in the colony
-  for (var i = 0; i < population; i++) { // Fill the colony array with a population of Cell objects
-    colony.push(new Cell());
+  var population = 1; // number of cells in the array
+  //var population = random(5,20); // number of cells in the array
+  for (var i = 0; i < population; i++) { // Fill the array with a population of Cell objects
+    cells.push(new Cell(random(width), random(height)));
   }
 }
 
 function draw() {
-  trails();
-  for (var i = 0; i < colony.length; i++) { // Iterate through the colony array, cell by cell
-    gravity = createVector (0, 0.2);
-    wind = createVector (random(0.01, 0.05), 0);
-    randomForce = createVector (random(-0.1,0.1), random(-0.1,0.1));
-    colony[i].applyForce(gravity);
-    colony[i].applyForce(wind);
-    //colony[i].applyForce(randomForce);
-    colony[i].update();
-    if (bounce) {colony[i].bounce();} else {colony[i].wraparound();}
-    colony[i].display();
+  //trails();
+  //background(bkgcol);
+  for (var i = 0; i < cells.length; i++) { // Iterate through the cells array, cell by cell
+    for (var j = 0; j < cells.length; j++) { // Iterate through the other cells in the array
+      if (i !== j) {
+        var attraction = cells[i].calculateForce(cells[j]); // calculate attraction between the cell[i] and cell[j]
+        cells[i].applyForce(attraction); // apply the calculated attraction to cell[i]
+        cells[i].update();
+      }
+    }
+    
+    if (bounce) {cells[i].bounce();} else {cells[i].wraparound();}
+    cells[i].display(i);
   }
 }
 
@@ -53,4 +59,12 @@ function trails() {
   rect(0,0,width, height);
   blendMode(BLEND);
   fill(255);
+}
+
+function mousePressed() {
+  cells.push(new Cell(mouseX, mouseY));
+}
+
+function mouseDragged() {
+  cells.push(new Cell(mouseX, mouseY));
 }
