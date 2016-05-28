@@ -6,6 +6,8 @@ The magnitude of the force will be proportional to the distance between the cell
 E.g. Similar colours attract, opposites repel, or similar sizes attract, opposites repel.
 Something along those lines, at least...
 
+New idea: There are some 'attractor' cells which move around in a circular 'orbit' around their given position. These will exert a constantly changing force on the particles which fall down from the top of the screen at a given interval.
+
 Assignments goals:
 
 Objects
