@@ -9,7 +9,7 @@ function Cell (x, y) {
   this.mass = 10;
   //this.color = color(random(360), random(50,100), random(50,100));
   this.color = color(random(360));
-  this.G = 1;
+  this.G = p.G; // use the global value of G (from the GUI)
   
   this.calculateForce = function(other) {
     var force = p5.Vector.sub(other.position, this.position);
@@ -59,14 +59,14 @@ function Cell (x, y) {
     pop();
   }
   
-  this.wraparound = function () { // Simple wraparound detection
+  this.wraparound = function () { // Simple boundary wraparound detection
     if (this.position.x > width) {this.position.x = 0;} 
     if (this.position.x < 0) {this.position.x = width;}
     if (this.position.y > height) {this.position.y = 0;}
     if (this.position.y < 0) {this.position.y = height;}
   }
   
-  this.bounce = function () { // Simple wraparound detection
+  this.rebound = function () { // Simple boundary rebound detection
     if (this.position.x > width) {this.position.x = width; this.velocity.x *= -1} 
     if (this.position.x < 0) {this.position.x = 0; this.velocity.x *= -1}
     if (this.position.y > height) {this.position.y = height; this.velocity.y *= -1}

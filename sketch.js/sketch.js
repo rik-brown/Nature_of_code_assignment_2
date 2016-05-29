@@ -14,11 +14,14 @@
 * Compiles: The code compiles and has no errors.
 * Multiple Objects: Use an array to manage a list of objects that vary according to one or two parameters (mass, initial velocity, etc.)
 *
+* TO DO:
+* + Add 'drag' to GUI (default value 0.95)
+* + Add 'starting population' to GUI
+*
 */
 
 var cells = []; // array for all cells
 var bkgcol = 0; // background color
-var bounce = false; //to enable 'floorBounce()'
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -30,11 +33,7 @@ function setup() {
   //noStroke();
   stroke(0);
   colorMode (HSB, 360, 100, 100);
-  //var population = 1; // number of cells in the array
-  var population = random(5,20); // number of cells in the array
-  for (var i = 0; i < population; i++) { // Fill the array with a population of Cell objects
-    cells.push(new Cell(random(width), random(height)));
-  }
+  populate();
 }
 
 function draw() {
@@ -49,10 +48,21 @@ function draw() {
       }
     }
     
-    if (bounce) {cells[i].bounce();} else {cells[i].wraparound();}
+    if (p.wraparound) {cells[i].wraparound();} else {cells[i].rebound();}
     cells[i].display(i);
   }
 }
+
+function populate() {
+  background(bkgcol); // Refresh the background
+  cells = []; // empty the cells array
+  //var population = 1; // for debug: number of cells = 1
+  var population = random(5,20); // number of cells in the array
+  for (var i = 0; i < population; i++) { // Fill the array with a population of Cell objects
+    cells.push(new Cell(random(width), random(height)));
+  }
+}
+
 
 function trails() {
   blendMode(DIFFERENCE);
@@ -72,13 +82,13 @@ function mouseDragged() {
 
 var initGUI = function () {
 
-	var f1 = gui.addFolder('Population');
-	  var controller = f1.add(p, 'G', 1, 10).step(1).name('Gravity')
-	    controller.onChange(function(value) {populateColony(); });
-    var controller = f1.add(p, 'centerSpawn').name('Centered').listen();
-	    controller.onChange(function(value) {populateColony(); });
+	 var controller = gui.add(p, 'G', 0.1, 5).step(0.11).name('Gravity')
+	    controller.onChange(function(value) {populate(); });
+	 var controller = gui.add(p, 'wraparound').name('Wraparound')
+	    controller.onChange(function(value) {populate(); });
 }
 
 var Parameters = function () { 
-  this.G = 10; // Gravity constant
+  this.G = 1; // Gravity constant
+  this.wraparound = false; //true enables wraparound()
 }
