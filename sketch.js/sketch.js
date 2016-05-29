@@ -18,13 +18,13 @@
 
 var cells = []; // array for all cells
 var bkgcol = 0; // background color
-var bounce = true; //to enable 'floorBounce()'
+var bounce = false; //to enable 'floorBounce()'
 var maxRadius = 50;
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //frameRate(1);
+  //frameRate(10);
   background (bkgcol);
   //noStroke();
   stroke(0);
