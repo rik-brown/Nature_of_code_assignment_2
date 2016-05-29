@@ -14,7 +14,7 @@ function Cell (x, y) {
   this.calculateForce = function(other) {
     var force = p5.Vector.sub(other.position, this.position);
     var distance = force.mag();
-    distance = constrain(distance, 5, 50);
+    distance = constrain(distance, 5, 25);
     force.normalize();
     var strength = (this.G * this.mass * other.mass) / (distance * distance);
     force.mult(strength); // force is now equal to 'normal gravitational attraction'
@@ -22,7 +22,7 @@ function Cell (x, y) {
     // Similar size attracts, different size repels
     // as sizeDiff approaches zero, strength should be mult.(1)
     // as sizeDiff increases, strength should be mult.(-1)
-    var sizeFactor = map(sizeDiff, 0, 50, 1, -1);
+    var sizeFactor = map(sizeDiff, 0, 40, 1, -1);
     //print("this r:" + this.radius + " other r:" + other. radius + " sizeDiff:" + sizeDiff + " sizeFactor:" + sizeFactor);
     force.mult(sizeFactor);
     return force;
@@ -38,7 +38,7 @@ function Cell (x, y) {
  
   this.update = function() {
     // Function where cell position and other things are updated
-    this.velocity.mult(0.95);
+    //this.velocity.mult(0.95);
     this.position.add(this.velocity);
   }
   

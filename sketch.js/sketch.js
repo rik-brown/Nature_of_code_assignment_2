@@ -19,18 +19,19 @@
 var cells = []; // array for all cells
 var bkgcol = 0; // background color
 var bounce = false; //to enable 'floorBounce()'
-var maxRadius = 50;
-
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   //frameRate(10);
   background (bkgcol);
+  p = new Parameters();
+  gui = new dat.GUI();
+  initGUI();
   //noStroke();
   stroke(0);
   colorMode (HSB, 360, 100, 100);
-  var population = 1; // number of cells in the array
-  //var population = random(5,20); // number of cells in the array
+  //var population = 1; // number of cells in the array
+  var population = random(5,20); // number of cells in the array
   for (var i = 0; i < population; i++) { // Fill the array with a population of Cell objects
     cells.push(new Cell(random(width), random(height)));
   }
@@ -67,4 +68,17 @@ function mousePressed() {
 
 function mouseDragged() {
   cells.push(new Cell(mouseX, mouseY));
+}
+
+var initGUI = function () {
+
+	var f1 = gui.addFolder('Population');
+	  var controller = f1.add(p, 'G', 1, 10).step(1).name('Gravity')
+	    controller.onChange(function(value) {populateColony(); });
+    var controller = f1.add(p, 'centerSpawn').name('Centered').listen();
+	    controller.onChange(function(value) {populateColony(); });
+}
+
+var Parameters = function () { 
+  this.G = 10; // Gravity constant
 }
