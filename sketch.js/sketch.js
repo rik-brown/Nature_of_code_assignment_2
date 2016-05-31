@@ -3,22 +3,7 @@
 * Nature of Code course
 * Assignment 2 : Physics
 * Richard Brown
-* Deliverables:
-* Objects: The code creates an object with the constructor function. DONE
-* Vectors: The object stores its position, velocity, and acceleration as vectors. (Use a minimum of 3 vectors inside your class.) 3 + 1
-* Mass: The object incorporates a mass variable. Be sure to name one your object's variables 'mass'. Mass is static, but....
-* Forces: Create a function inside your object called 'applyForce' that has at least one argument.DONE
-* Apply Forces: Pass forces into your object through an argument in the applyForce() function inside your object. Use this function at least once.
-* Design: The moving objects' design is different from the plain examples shown in the lecture.
-* Code Comments: The code includes comments to describe what it is doing throughout. There should be a relative number of lines of comments compared to lines of code.
-* Compiles: The code compiles and has no errors.
-* Multiple Objects: Use an array to manage a list of objects that vary according to one or two parameters (mass, initial velocity, etc.)
-*
-* TO DO:
-* + Think about some way of making the size parameter 'wraparound'
-*   It is currently linear, meaning there are colours at the 'top' and the 'bottom'
-*   Is it possible to use instead heading() and anglebetween for a circular range? STARTED
-* + It would also be very cool if you could select the number of colours (upto 360, perhaps?)
+* Revision: A
 */
 
 var cells = []; // array for all cells
@@ -27,31 +12,31 @@ var bkgcol = 0; // background color
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background (bkgcol);
-  p = new Parameters();
-  gui = new dat.GUI();
+  p = new Parameters(); // Container for all parameters selectable in the GUI
+  gui = new dat.GUI(); // simple GUI using the dat.gui library
   initGUI();
   colorMode (HSB, 360, 255, 255, 255);
-  populate();
+  populate(); // Call function to populate the cells array
 }
 
 function draw() {
   if (!p.trails) {background(bkgcol);} // Refresh the background when 'trails' toggle is false
-  if (p.trails && p.short) {trails();}
+  if (p.trails && p.short) {trails();} // Alternative 'short trails' function which uses blendMode
   for (var i = 0; i < cells.length; i++) { // Iterate through the cells array, cell by cell
     for (var j = 0; j < cells.length; j++) { // Iterate through the other cells in the array
       if (i !== j) { // Don't calculate attraction to yourself
         var attraction = cells[i].calculateForce(cells[j]); // calculate attraction between the cell[i] and cell[j]
         cells[i].applyForce(attraction); // apply the calculated attraction to cell[i]
-        cells[i].update();
+        cells[i].update(); // Update the position
       }
     }
     
-    if (p.wraparound) {cells[i].wraparound();} else {cells[i].rebound();}
-    cells[i].display(i);
+    if (p.wraparound) {cells[i].wraparound();} else {cells[i].rebound();}  // check positon relative to canvas boundaries
+    cells[i].display(i); // display the cell
   }
 }
 
-function populate() {
+function populate() {  // create the cells to fill the array with an initial 'spawn'
   background(bkgcol);
   cells = []; // empty the cells array
   //var population = 1; // for debug: number of cells = 1
@@ -61,7 +46,7 @@ function populate() {
 }
 
 
-function trails() { // Currently not called, needs another toggle in the GUI
+function trails() { // pretty!
   blendMode(DIFFERENCE);
   fill(1);
   rect(0,0,width, height);
@@ -69,19 +54,19 @@ function trails() { // Currently not called, needs another toggle in the GUI
   fill(255);
 }
 
-function mousePressed() {
+function mousePressed() { // spawn a cell on mouseclick
   cells.push(new Cell(mouseX, mouseY));
 }
 
-function mouseDragged() {
+function mouseDragged() { // spawn many cells on mousedrag
   cells.push(new Cell(mouseX, mouseY));
 }
 
-var initGUI = function () {
+var initGUI = function () { // build the GUI (call populate() if anything is changed)
 
   var controller = gui.add(p, 'population', 2, 1000).step(1).name('Population')
 	  controller.onChange(function(value) {populate(); });
-  var controller = gui.add(p, 'colours', 2, 360).step(1).name('Colours')
+  var controller = gui.add(p, 'colors', 1, 360).step(1).name('colors')
 	  controller.onChange(function(value) {populate(); });
   var controller = gui.add(p, 'equalMass').name('Equal mass')
 	  controller.onChange(function(value) {populate(); });
@@ -102,20 +87,20 @@ var initGUI = function () {
 }
 
 var Parameters = function () { 
-  this.population = 3; // # cells in initial population
-  this.colours = 2; // # colours selected in random selection
-  this.equalMass = true; // if true, all cells have same mass. if false, mass is proportional to colourAngle
-  this.G = 1; // Gravity constant
-  this.distMin = 5;
-  this.distMax = 25;
-  this.damping = 0.95; // Simple drag effect to dampen velocity
+  this.population = 3; // # cells in initial population (range: 2-1000)
+  this.colors = 3; // # colors selected in random selection (range 1-360)
+  this.equalMass = true; // if true, all cells have same mass. if false, mass is proportional to colorAngle
+  this.G = 1; // Gravity constant (range 0.1-5)
+  this.distMin = 5; // lower value in constrain command applied to distance (range 0-10)
+  this.distMax = 25; // upper value in constrain command applied to distance (range 10-50)
+  this.damping = 0.95; // Simple drag effect to dampen velocity (range 0.8-1.0)
   this.trails = true; // true disables background refresh in draw();
   this.short = false; // true enables 'short blending trails' mode
   this.wraparound = true; //true enables wraparound()
 }
 
 function keyTyped() {
-  if (key === ' ') { //spacebar
+  if (key === ' ') { //spacebar will re-populate (re-start)
     populate();
   }
 }
