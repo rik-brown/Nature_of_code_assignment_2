@@ -1,8 +1,10 @@
 function Cell (x, y) {
   // Constructor for cell object
-  var mass = 10; // Mass value when equalMass is selected in GUI
+  var mass = 2.8; // Mass value when equalMass is selected in GUI
   this.position = createVector (x, y); // Cell starts at random position
-  this.velocity = createVector (0, 0); // Initial velocity is 0
+  //this.velocity = createVector (0, 0); // Initial velocity is 0
+  this.velocity = createVector (random(3), random(3)); // Initial velocity is random
+  this.acceleration = createVector (0,0);
   
   this.angle = (int(random(p.colors))+1)*360/p.colors; // A random angle in radians, used as basis to calculate color. Number of different colours selected by GUI p.colours
   this.hueVector = p5.Vector.fromAngle(radians(this.angle)); // hueVector needed for 'colorDiff' below (makes possible the 'angleBetween' calculation)
@@ -31,16 +33,19 @@ function Cell (x, y) {
   }
 
   this.applyForce = function(force) { // no frills applyForce function
-    this.acceleration = createVector (0,0);
+    //this.acceleration = createVector (0,0);
     var f = force.copy();
     f.div(this.mass);
     this.acceleration.add(f);
-    this.velocity.add(this.acceleration);
+    //this.velocity.add(this.acceleration);
   } 
  
   this.update = function() { // Function where cell position and other things are updated
+    this.velocity.add(this.acceleration);
     this.velocity.mult(p.damping);
+    this.velocity.limit(2);
     this.position.add(this.velocity);
+    this.acceleration.set(0,0);
   }
   
   this.display = function(i) { // Function where the cell is rendered to the canvas

@@ -87,14 +87,14 @@ var initGUI = function () { // build the GUI (call populate() if anything is cha
 }
 
 var Parameters = function () { 
-  this.population = 3; // # cells in initial population (range: 2-1000)
-  this.colors = 3; // # colors selected in random selection (range 1-360)
-  this.equalMass = true; // if true, all cells have same mass. if false, mass is proportional to colorAngle
+  this.population = 10; // # cells in initial population (range: 2-1000)
+  this.colors = 4; // # colors selected in random selection (range 1-360)
+  this.equalMass = false; // if true, all cells have same mass. if false, mass is proportional to colorAngle
   this.G = 1; // Gravity constant (range 0.1-5)
   this.distMin = 5; // lower value in constrain command applied to distance (range 0-10)
   this.distMax = 25; // upper value in constrain command applied to distance (range 10-50)
-  this.damping = 0.95; // Simple drag effect to dampen velocity (range 0.8-1.0)
-  this.trails = true; // true disables background refresh in draw();
+  this.damping = 1.0; // Simple drag effect to dampen velocity (range 0.8-1.0)
+  this.trails = false; // true disables background refresh in draw();
   this.short = false; // true enables 'short blending trails' mode
   this.wraparound = true; //true enables wraparound()
 }
